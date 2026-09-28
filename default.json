@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Shared Renovate spine: supply-chain bake, OpenSSF badges, annotated version pins.",
+  "description": "Shared Renovate policy for alunduil's repositories.",
   "extends": [
     "config:best-practices",
     "security:openssf-scorecard",
@@ -15,7 +15,7 @@
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
-      "description": "Update types with no release timestamp can never satisfy the bake, and internalChecksFilter defaults to strict, so without this they stall on a pending renovate/stability-days check forever",
+      "description": "These update types carry no release timestamp, so the release-age wait would hold them forever without opening a PR",
       "matchUpdateTypes": [
         "pin",
         "pinDigest",
