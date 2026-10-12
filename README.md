@@ -1,10 +1,16 @@
 # renovate-config
 
+[![License](https://img.shields.io/github/license/alunduil/renovate-config)](LICENSE)
+
 The shared Renovate preset for alunduil's repositories. Extend it from a
 repository's `renovate.json` to take on the common dependency-update
 policy.
 
 ## Use the preset
+
+The preset does nothing until the [Renovate GitHub
+app](https://github.com/apps/renovate) runs on the repository. With the
+app installed, extend the preset from `renovate.json`:
 
 ```json
 {
@@ -24,7 +30,7 @@ onboarding PR for a new repository extends this preset automatically.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
-- GitHub Actions and Docker images are pinned to digests.
+- Renovate pins GitHub Actions and Docker images to digests.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
   variable in a workflow or action file lets Renovate update that
   version.
@@ -46,3 +52,8 @@ the preset's value; these merge with it instead:
 | `customManagers`      | Appended to the preset's managers.                |
 | `addLabels`           | Adds to `labels` without dropping `dependencies`. |
 | `additionalReviewers` | Adds to `reviewers` without dropping alunduil.    |
+
+## Contributions
+
+This preset follows the needs of alunduil's repositories and isn't
+accepting contributions.
