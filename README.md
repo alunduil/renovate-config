@@ -20,16 +20,18 @@ onboarding PR for a new repository extends this preset automatically.
 
 - Update PRs wait until a release is three days old. Pins, digests,
   and lock file maintenance carry no release date, so they skip the
-  wait. A release from a registry that publishes no dates, such as
-  Hackage, also skips it, and the Dependency Dashboard warns about it.
+  wait.
+- Releases from registries that publish no dates, such as Hackage,
+  also skip the wait. The Dependency Dashboard lists this as a warning
+  under Repository Problems.
 - GitHub Actions and Docker images are pinned to digests.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
-  variable in a workflow or action file puts that version under
-  Renovate.
+  variable in a workflow or action file lets Renovate update that
+  version.
 - Pre-commit hook updates, OSV vulnerability alerts, and weekly lock
   file maintenance are on.
-- PR bodies carry an OpenSSF Scorecard column, PRs are labelled
-  `dependencies`, and alunduil is requested as reviewer.
+- Every PR carries the `dependencies` label, an OpenSSF Scorecard
+  column, and a review request for alunduil.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
 
@@ -40,7 +42,7 @@ the preset's value; these merge with it instead:
 
 | Field                 | Effect                                            |
 | --------------------- | ------------------------------------------------- |
-| `packageRules`        | Appended after the preset's; local wins.          |
+| `packageRules`        | Appended after the preset's, so yours win.        |
 | `customManagers`      | Appended to the preset's managers.                |
 | `addLabels`           | Adds to `labels` without dropping `dependencies`. |
 | `additionalReviewers` | Adds to `reviewers` without dropping alunduil.    |
