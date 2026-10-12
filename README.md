@@ -28,8 +28,8 @@ onboarding PR for a new repository extends this preset automatically.
   Renovate.
 - Pre-commit hook updates, OSV vulnerability alerts, and weekly lock
   file maintenance are on.
-- PR bodies carry an OpenSSF Scorecard column, and alunduil is
-  requested as reviewer.
+- PR bodies carry an OpenSSF Scorecard column, PRs are labelled
+  `dependencies`, and alunduil is requested as reviewer.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
 
@@ -38,9 +38,9 @@ onboarding PR for a new repository extends this preset automatically.
 A repository's `renovate.json` wins over the preset. Most fields replace
 the preset's value; these merge with it instead:
 
-| Field                 | Effect                                         |
-| --------------------- | ---------------------------------------------- |
-| `packageRules`        | Appended after the preset's; local wins.       |
-| `customManagers`      | Appended to the preset's managers.             |
-| `addLabels`           | Adds to `labels`.                              |
-| `additionalReviewers` | Adds to `reviewers` without dropping alunduil. |
+| Field                 | Effect                                            |
+| --------------------- | ------------------------------------------------- |
+| `packageRules`        | Appended after the preset's; local wins.          |
+| `customManagers`      | Appended to the preset's managers.                |
+| `addLabels`           | Adds to `labels` without dropping `dependencies`. |
+| `additionalReviewers` | Adds to `reviewers` without dropping alunduil.    |
