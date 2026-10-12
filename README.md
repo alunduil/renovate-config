@@ -20,7 +20,8 @@ onboarding PR for a new repository extends this preset automatically.
 
 - Update PRs wait until a release is three days old. Pins, digests,
   and lock file maintenance carry no release date, so they skip the
-  wait.
+  wait. A release from a registry that publishes no dates, such as
+  Hackage, also skips it, and the Dependency Dashboard warns about it.
 - GitHub Actions and Docker images are pinned to digests.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
   variable in a workflow or action file puts that version under
