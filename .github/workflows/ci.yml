@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  hooks:
+  pre-commit:
     name: Run pre-commit hooks
     runs-on: ubuntu-latest
     timeout-minutes: 10
