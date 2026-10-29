@@ -11,8 +11,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  # Cancel superseded pull request runs; never cancel a push to main, so every
-  # commit on it keeps a result of its own.
+  # Every commit on main keeps a result of its own.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

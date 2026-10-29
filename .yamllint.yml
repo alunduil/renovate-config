@@ -1,14 +1,13 @@
----
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
-
+---
 extends: default
 
 rules:
-  # Workflow YAML carries URLs and SHA pins that shouldn't be wrapped.
+  # SHA-pinned `uses:` lines run past 80 columns and carry a one-space
+  # version comment.
   line-length:
     max: 120
-
   comments:
     min-spaces-from-content: 1
 
