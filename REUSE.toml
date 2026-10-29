@@ -1,17 +1,15 @@
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
 
-# Copyright and licensing for files that cannot carry inline SPDX headers.
-
 version = 1
 SPDX-PackageName = "renovate-config"
 SPDX-PackageSupplier = "Alex Brandt <alunduil@gmail.com>"
 SPDX-PackageDownloadLocation = "https://github.com/alunduil/renovate-config"
 
+# Files that cannot carry an inline header:
 # - JSON: no comment syntax.
-# - Markdown: inline HTML comment headers render visibly in some viewers.
-# - LICENSE: holds the conventional text; REUSE reads the SPDX-canonical
-#   copy in LICENSES/MIT.txt.
+# - Markdown: an HTML comment header renders visibly in some viewers.
+# - LICENSE: stays the verbatim MIT text; REUSE reads LICENSES/MIT.txt.
 [[annotations]]
 path = ["**.json", "**.md", "LICENSE"]
 precedence = "aggregate"

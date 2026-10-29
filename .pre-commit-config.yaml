@@ -30,19 +30,17 @@ repos:
       - id: yamllint
         args: ['--strict']
 
-  # Every tracked file declares copyright and licence, inline or via
-  # REUSE.toml.
   - repo: https://github.com/fsfe/reuse-tool
     rev: v6.2.0
     hooks:
       - id: reuse
 
-  # The hook's default pattern matches repo config filenames such as
-  # renovate.json, not a preset's default.json. Without --no-global, a named
-  # file is validated as self-hosted global config rather than as a preset.
+  # The default `files` pattern matches renovate.json, not default.json.
+  # Without --no-global, the validator checks a named file as self-hosted
+  # global config, not repo config.
   #
-  # Remote presets go unchecked: what a consumer's `extends` resolves to
-  # surfaces only on its next Renovate run.
+  # Presets in `extends` go unresolved, so a misspelt name passes here and
+  # fails only on the next Renovate run.
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 44.181.6
     hooks:
