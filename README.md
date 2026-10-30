@@ -53,6 +53,12 @@ the preset's value; these merge with it instead:
 | `addLabels`           | Adds to `labels` without dropping `dependencies`. |
 | `additionalReviewers` | Adds to `reviewers` without dropping alunduil.    |
 
+## Fix hooks on Renovate branches
+
+A reusable workflow pushes pre-commit hook fixes to Renovate pull
+requests. See [Fix hooks on Renovate
+branches](docs/how-to/fix-hooks-on-renovate-branches.md).
+
 ## Contributions
 
 This preset follows the needs of alunduil's repositories and isn't
