@@ -15,11 +15,18 @@ account. It assumes the repository already runs its hooks in CI.
 - The `alunduil-hook-fix` App is installed on the repository.
 - The repository's `renovate` ruleset lets the App push to
   `renovate/**` branches. alunduil-infrastructure manages both.
+- Renovate's `gitIgnoredAuthors` lists the App's commit email.
+  Otherwise Renovate treats a fixed branch as edited by someone else
+  and stops updating it. The preset doesn't set this yet; see
+  [#14](https://github.com/alunduil/renovate-config/issues/14).
 
 ## Call the workflow
 
-Add a job to the workflow that runs on `pull_request`. Replace `SHA`
-with a commit on `main`; Renovate bumps the pin from there.
+Add a job to a workflow triggered by a bare `pull_request:`, with no
+`types:`. The workflow skips the App's own pushes by the event's
+sender, so extra activity types such as `labeled` would let a later
+event push a second round of fixes. Replace `SHA` with a commit on
+`main`.
 
 ```yaml
 jobs:
@@ -57,7 +64,11 @@ Every input is optional.
 
 - A fix arrives as one commit, `style: apply hook fixes`, from
   `alunduil-hook-fix[bot]`.
-- Only files the repository already tracks are fixed. A file a hook
-  creates isn't carried.
+- The App pushes only edits to files the repository already tracks,
+  outside `.github/workflows/`. Fixes that create, delete, rename, or
+  change the mode of a file, or touch a workflow, fail the push job;
+  run the hooks by hand.
 - If the fixed commit still fails a hook, the check stays red. The App
   doesn't push a second round.
+- If the branch moved after the hooks ran, the push job skips. The
+  newer commit gets a run of its own.

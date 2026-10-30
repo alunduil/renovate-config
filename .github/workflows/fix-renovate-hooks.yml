@@ -79,21 +79,26 @@ jobs:
         if: inputs.setup != ''
         run: ${{ inputs.setup }}
 
+      - name: Install hook runner
+        env:
+          HOOK_RUNNER: ${{ inputs.hook-runner }}
+        run: |
+          case "${HOOK_RUNNER}" in
+            pre-commit) pipx install "pre-commit==${PRE_COMMIT_VERSION}" ;;
+            prek) pipx install "prek==${PREK_VERSION}" ;;
+            *)
+              echo "::error::hook-runner must be pre-commit or prek, not ${HOOK_RUNNER}"
+              exit 1
+              ;;
+          esac
+
       # A hook that fixes files exits non-zero, so the status is ignored and
       # the diff decides.
       - name: Run hooks
         env:
           HOOK_RUNNER: ${{ inputs.hook-runner }}
         run: |
-          case "${HOOK_RUNNER}" in
-            pre-commit) spec="pre-commit==${PRE_COMMIT_VERSION}" ;;
-            prek) spec="prek==${PREK_VERSION}" ;;
-            *)
-              echo "::error::hook-runner must be pre-commit or prek, not ${HOOK_RUNNER}"
-              exit 1
-              ;;
-          esac
-          pipx run --spec "${spec}" "${HOOK_RUNNER}" run --all-files || true
+          "${HOOK_RUNNER}" run --all-files || true
 
       # Tracked files only: a file a hook newly creates isn't carried.
       - name: Capture fixes
@@ -118,6 +123,9 @@ jobs:
     if: needs.hooks.outputs.has-fixes == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      group: fix-renovate-hooks-${{ github.repository }}-${{ github.head_ref }}
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write
@@ -170,14 +178,44 @@ jobs:
           git config user.name "${APP_SLUG}[bot]"
           git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
 
+      - name: Apply fixes
+        run: git apply --index "${RUNNER_TEMP}/${HOOK_FIX_DIFF}"
+
+      # The diff comes from a job that ran dependency code, so the App pushes
+      # only in-place edits to existing files. --summary is empty exactly
+      # then; a submodule pointer is the one in-place edit that isn't a file.
+      # The App lacks the workflows permission GitHub requires to push
+      # .github/workflows changes.
+      - name: Check fixes
+        run: |
+          if [ -n "$(git diff --cached --no-renames --summary)" ] \
+            || git diff --cached --raw | grep -q '^:160000'; then
+            echo "::error::Hook fixes add, delete, or re-type files; run the hooks by hand."
+            git diff --cached --no-renames --summary
+            exit 1
+          fi
+          if [ -n "$(git diff --cached --name-only -- .github/workflows)" ]; then
+            echo "::error::Hook fixes touch workflow files, which the App can't push; run the hooks by hand."
+            git diff --cached --name-only -- .github/workflows
+            exit 1
+          fi
+
       - name: Commit fixes
         run: |
-          git apply --index "${RUNNER_TEMP}/${HOOK_FIX_DIFF}"
           git commit --message "style: apply hook fixes"
 
-      # Without force, a branch Renovate moved since the hooks ran rejects the
-      # push, and Renovate's own push starts a fresh run.
+      # A branch that moved since the hooks ran has a newer run of its own,
+      # whether Renovate pushed or a duplicate run already pushed fixes. The
+      # push stays non-force, so a move between this check and the push is
+      # rejected rather than overwritten.
       - name: Push fixes
         env:
           HEAD_REF: ${{ github.head_ref }}
-        run: git push origin "HEAD:refs/heads/${HEAD_REF}"
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          remote_sha="$(git ls-remote origin "refs/heads/${HEAD_REF}" | cut -f1)"
+          if [ "${remote_sha}" != "${HEAD_SHA}" ]; then
+            echo "::notice::${HEAD_REF} moved since the hooks ran; skipping the push."
+            exit 0
+          fi
+          git push origin "HEAD:refs/heads/${HEAD_REF}"
