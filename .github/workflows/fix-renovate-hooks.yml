@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
 ---
-# Runs a caller's hooks on a Renovate pull request and pushes their fixes as
-# the alunduil-hook-fix App, whose push re-runs the required checks.
+# Fixes push as the alunduil-hook-fix App because a GITHUB_TOKEN push doesn't
+# re-run the required checks.
 #
-# The hooks and the App key never share a job: the hooks run the pull
-# request's dependency code, so that job holds no secrets and no id-token.
+# The hooks run the pull request's dependency code, so their job holds no
+# secrets and no id-token.
 #
 # alunduil-infrastructure's hook-fix provider admits only this file's
 # job_workflow_ref, so renaming or moving it revokes the push job's access.
@@ -28,7 +28,6 @@ on:
         default: pre-commit
 
 env:
-  # Carries the hooks job's fixes to the push job, as file and artifact.
   HOOK_FIX_DIFF: hook-fix.diff
   # renovate: datasource=pypi depName=pre-commit
   PRE_COMMIT_VERSION: '4.7.0'
@@ -38,9 +37,8 @@ env:
 jobs:
   hooks:
     name: Run hooks on the Renovate branch
-    # A fork's pull request never reaches the push job. Skipping the App's own
-    # pushes ends hooks that rewrite each other's output as a red check rather
-    # than a push loop.
+    # Fork code never feeds the App's push. Skipping the App's own pushes
+    # stops hooks that rewrite each other's output from looping.
     if: >-
       startsWith(github.head_ref, 'renovate/')
       && github.event.pull_request.head.repo.full_name == github.repository
@@ -100,7 +98,6 @@ jobs:
         run: |
           "${HOOK_RUNNER}" run --all-files || true
 
-      # Tracked files only: a file a hook newly creates isn't carried.
       - name: Capture fixes
         id: fixes
         run: |
@@ -155,8 +152,7 @@ jobs:
           private-key: ${{ steps.secrets.outputs.private-key }}
           permission-contents: write
 
-      # Nothing from the checkout runs in this job: no hooks, no package
-      # installs, only git apply, commit, and push.
+      # This job holds the App token, so it runs nothing from the checkout.
       - name: Checkout pull request head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -181,11 +177,9 @@ jobs:
       - name: Apply fixes
         run: git apply --index "${RUNNER_TEMP}/${HOOK_FIX_DIFF}"
 
-      # The diff comes from a job that ran dependency code, so the App pushes
-      # only in-place edits to existing files. --summary is empty exactly
-      # then; a submodule pointer is the one in-place edit that isn't a file.
-      # The App lacks the workflows permission GitHub requires to push
-      # .github/workflows changes.
+      # The diff comes from a job that ran dependency code, so only in-place
+      # edits to tracked files pass. A submodule pointer move is in-place too.
+      # Pushing .github/workflows needs a permission the App lacks.
       - name: Check fixes
         run: |
           if [ -n "$(git diff --cached --no-renames --summary)" ] \
@@ -204,10 +198,8 @@ jobs:
         run: |
           git commit --message "style: apply hook fixes"
 
-      # A branch that moved since the hooks ran has a newer run of its own,
-      # whether Renovate pushed or a duplicate run already pushed fixes. The
-      # push stays non-force, so a move between this check and the push is
-      # rejected rather than overwritten.
+      # A moved branch has a newer run of its own. Without force, a move
+      # racing this check rejects the push instead of being overwritten.
       - name: Push fixes
         env:
           HEAD_REF: ${{ github.head_ref }}

@@ -5,8 +5,8 @@ extends: default
 
 rules:
   # SHA-pinned `uses:` lines run past 80 columns and carry a one-space
-  # version comment. Resource names such as a workload identity provider
-  # can't be broken at all.
+  # version comment. An unbreakable value, such as a resource name, may run
+  # longer.
   line-length:
     max: 120
     allow-non-breakable-inline-mappings: true
