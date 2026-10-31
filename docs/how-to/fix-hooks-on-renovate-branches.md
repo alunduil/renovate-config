@@ -13,9 +13,10 @@ account. It assumes the repository already runs its hooks in CI.
 - The `alunduil-hook-fix` App is installed on the repository.
 - The repository's `renovate` ruleset lets the App push to
   `renovate/**` branches. alunduil-infrastructure manages both.
-- The repository's `renovate.json` extends this preset, which lists
-  the App's commit email in `gitIgnoredAuthors`. Without it, Renovate
-  treats a fixed branch as edited and stops updating it.
+- The repository's `renovate.json` extends
+  `github>alunduil/renovate-config`. Without the preset, Renovate
+  treats a branch carrying the App's fix as edited and stops updating
+  it.
 
 ## Call the workflow
 
