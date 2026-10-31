@@ -49,6 +49,8 @@ jobs:
       contents: read
     outputs:
       has-fixes: ${{ steps.fixes.outputs.has-fixes }}
+    env:
+      HOOK_RUNNER: ${{ inputs.hook-runner }}
 
     steps:
       # The head commit, not the merge ref, so the diff applies to the branch.
@@ -78,8 +80,6 @@ jobs:
         run: ${{ inputs.setup }}
 
       - name: Install hook runner
-        env:
-          HOOK_RUNNER: ${{ inputs.hook-runner }}
         run: |
           case "${HOOK_RUNNER}" in
             pre-commit) pipx install "pre-commit==${PRE_COMMIT_VERSION}" ;;
@@ -93,8 +93,6 @@ jobs:
       # A hook that fixes files exits non-zero, so the status is ignored and
       # the diff decides.
       - name: Run hooks
-        env:
-          HOOK_RUNNER: ${{ inputs.hook-runner }}
         run: |
           "${HOOK_RUNNER}" run --all-files || true
 
@@ -121,8 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
-      group: fix-renovate-hooks-${{ github.repository }}-${{ github.head_ref }}
-      cancel-in-progress: false
+      group: fix-renovate-hooks-${{ github.head_ref }}
     permissions:
       contents: read
       id-token: write
@@ -179,18 +176,22 @@ jobs:
 
       # The diff comes from a job that ran dependency code, so only in-place
       # edits to tracked files pass. A submodule pointer move is in-place too.
-      # Pushing .github/workflows needs a permission the App lacks.
-      - name: Check fixes
+      - name: Reject fixes that aren't in-place edits
         run: |
-          if [ -n "$(git diff --cached --no-renames --summary)" ] \
-            || git diff --cached --raw | grep -q '^:160000'; then
+          summary="$(git diff --cached --no-renames --summary)"
+          if [ -n "${summary}" ] || git diff --cached --raw | grep -q '^:160000'; then
             echo "::error::Hook fixes add, delete, or re-type files; run the hooks by hand."
-            git diff --cached --no-renames --summary
+            echo "${summary}"
             exit 1
           fi
-          if [ -n "$(git diff --cached --name-only -- .github/workflows)" ]; then
+
+      # Pushing .github/workflows needs a permission the App lacks.
+      - name: Reject fixes to workflow files
+        run: |
+          workflows="$(git diff --cached --name-only -- .github/workflows)"
+          if [ -n "${workflows}" ]; then
             echo "::error::Hook fixes touch workflow files, which the App can't push; run the hooks by hand."
-            git diff --cached --name-only -- .github/workflows
+            echo "${workflows}"
             exit 1
           fi
 
