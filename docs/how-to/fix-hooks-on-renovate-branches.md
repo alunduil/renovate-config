@@ -13,17 +13,9 @@ account. It assumes the repository already runs its hooks in CI.
 - The `alunduil-hook-fix` App is installed on the repository.
 - The repository's `renovate` ruleset lets the App push to
   `renovate/**` branches. alunduil-infrastructure manages both.
-- The repository's `renovate.json` lists the App's commit email in
-  `gitIgnoredAuthors`. Without it, Renovate treats a fixed branch as
-  edited and stops updating it:
-
-  ```json
-  {
-    "gitIgnoredAuthors": [
-      "342169994+alunduil-hook-fix[bot]@users.noreply.github.com"
-    ]
-  }
-  ```
+- The repository's `renovate.json` extends this preset, which lists
+  the App's commit email in `gitIgnoredAuthors`. Without it, Renovate
+  treats a fixed branch as edited and stops updating it.
 
 ## Call the workflow
 
