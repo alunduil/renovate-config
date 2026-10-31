@@ -29,13 +29,14 @@ account. It assumes the repository already runs its hooks in CI.
 
 Add a job to a workflow triggered by a bare `pull_request:`, with no
 `types:`. Extra activity types, such as `labeled`, can push a second
-round of fixes. Replace `SHA` with a commit on `main`.
+round of fixes. Replace `SHA` with a commit on `main`. Renovate updates
+the pin only while the `# main` comment names its branch.
 
 ```yaml
 jobs:
   fix-renovate-hooks:
     name: Fix hooks on the Renovate branch
-    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@SHA
+    uses: alunduil/renovate-config/.github/workflows/fix-renovate-hooks.yml@SHA # main
     permissions:
       contents: read
       id-token: write
