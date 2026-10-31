@@ -27,10 +27,10 @@ account. It assumes the repository already runs its hooks in CI.
 
 ## Call the workflow
 
-Add a job to a workflow triggered by a bare `pull_request:`, with no
-`types:`. Extra activity types, such as `labeled`, can push a second
-round of fixes. Replace `SHA` with a commit on `main`. Renovate updates
-the pin only while the `# main` comment names its branch.
+Add a job to a workflow triggered by `pull_request:` with no `types:`.
+Extra activity types, such as `labeled`, can push a second round of
+fixes. Replace `SHA` with a commit on `main`, and keep the `# main`
+comment: Renovate updates the pin only through it.
 
 ```yaml
 jobs:

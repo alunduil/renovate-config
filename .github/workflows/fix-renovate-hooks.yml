@@ -174,8 +174,8 @@ jobs:
       - name: Apply fixes
         run: git apply --index "${RUNNER_TEMP}/${HOOK_FIX_DIFF}"
 
-      # The diff comes from a job that ran dependency code, so only in-place
-      # edits to tracked files pass. A submodule pointer move is in-place too.
+      # The diff comes from a job that ran dependency code. A submodule pointer
+      # move looks like an in-place edit, so it needs its own test.
       - name: Reject fixes that aren't in-place edits
         run: |
           summary="$(git diff --cached --no-renames --summary)"
