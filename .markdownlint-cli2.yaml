@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+config:
+  # A SHA-pinned `uses:` line with its version comment can't wrap.
+  MD013:
+    code_blocks: false
