@@ -22,6 +22,25 @@ app installed, extend the preset from `renovate.json`:
 Add only repository-specific settings beside `extends`. Renovate's
 onboarding PR for a new repository extends this preset automatically.
 
+### Pin exact versions in an application
+
+An application controls its whole dependency tree, so it pins every
+dependency to an exact version. A published library keeps its ranges
+so that its consumers can resolve shared dependencies. An application
+extends the `application` preset in place of the default:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>alunduil/renovate-config:application"]
+}
+```
+
+The `application` preset includes the default preset. On top of it,
+it sets `rangeStrategy: pin` for every dependency except
+`peerDependencies` and `engines`, so Renovate opens a PR that pins
+each range.
+
 ## What changes for a consuming repository
 
 - Update PRs wait until a release is three days old. Pins, digests,
