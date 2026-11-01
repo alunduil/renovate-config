@@ -41,6 +41,8 @@ repos:
       - id: reuse
 
   # The default `files` pattern matches renovate.json, not the presets.
+  # Every JSON file at the root is a preset, so a new one is validated
+  # without editing this pattern.
   # Without --no-global, the validator checks a named file as self-hosted
   # global config, not repo config.
   #
@@ -50,7 +52,7 @@ repos:
     rev: 44.181.6
     hooks:
       - id: renovate-config-validator
-        files: ^(default|application)\.json$
+        files: ^[^/]+\.json$
         args: [--strict, --no-global]
 
   - repo: https://github.com/compilerla/conventional-pre-commit
