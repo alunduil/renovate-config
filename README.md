@@ -22,12 +22,9 @@ app installed, extend the preset from `renovate.json`:
 Add only repository-specific settings beside `extends`. Renovate's
 onboarding PR for a new repository extends this preset automatically.
 
-### Pin exact versions in an application
+## Pin exact versions in an application
 
-An application controls its whole dependency tree, so it pins every
-dependency to an exact version. A published library keeps its ranges
-so that its consumers can resolve shared dependencies. An application
-extends the `application` preset in place of the default:
+Extend the `application` preset in place of the default:
 
 ```json
 {
@@ -36,10 +33,10 @@ extends the `application` preset in place of the default:
 }
 ```
 
-The `application` preset includes the default preset. On top of it,
-it sets `rangeStrategy: pin` for every dependency except
-`peerDependencies` and `engines`, so Renovate opens a PR that pins
-each range.
+Renovate opens a PR pinning every range except `peerDependencies` and
+`engines`. Everything else matches the default preset. A published
+library stays on the default, keeping its ranges so its consumers can
+resolve shared dependencies.
 
 ## What changes for a consuming repository
 
@@ -49,10 +46,9 @@ each range.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
-- Renovate pins GitHub Actions and Docker images to digests, including
-  a dev container's `image`. Dev container features keep their tags,
-  because the dev container CLI rejects a feature pinned by both tag
-  and digest.
+- Renovate pins GitHub Actions and Docker images, dev container images
+  included, to digests. Dev container features keep their tags because
+  the dev container CLI rejects a feature pinned by tag and digest.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
   variable in a workflow or action file lets Renovate update that
   version.

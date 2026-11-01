@@ -41,8 +41,7 @@ repos:
       - id: reuse
 
   # The default `files` pattern matches renovate.json, not the presets.
-  # Every JSON file at the root is a preset, so a new one is validated
-  # without editing this pattern.
+  # Every JSON file at the root is a preset.
   # Without --no-global, the validator checks a named file as self-hosted
   # global config, not repo config.
   #
