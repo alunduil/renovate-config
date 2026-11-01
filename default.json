@@ -32,6 +32,12 @@
         "replacement"
       ],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "docker:pinDigests turns pinning off for the whole devcontainer manager because the dev container CLI rejects tag@digest on features; images accept it, so pin those",
+      "matchManagers": ["devcontainer"],
+      "matchDepTypes": ["image"],
+      "pinDigests": true
     }
   ]
 }

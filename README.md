@@ -30,7 +30,10 @@ onboarding PR for a new repository extends this preset automatically.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
-- Renovate pins GitHub Actions and Docker images to digests.
+- Renovate pins GitHub Actions and Docker images to digests, including
+  a dev container's `image`. Dev container features keep their tags,
+  because the dev container CLI rejects a feature pinned by both tag
+  and digest.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
   variable in a workflow or action file lets Renovate update that
   version.
