@@ -22,6 +22,22 @@ app installed, extend the preset from `renovate.json`:
 Add only repository-specific settings beside `extends`. Renovate's
 onboarding PR for a new repository extends this preset automatically.
 
+## Pin exact versions in an application
+
+Extend the `application` preset in place of the default:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>alunduil/renovate-config:application"]
+}
+```
+
+Renovate opens a PR pinning every range except `peerDependencies` and
+`engines`. Everything else matches the default preset. A published
+library stays on the default, keeping its ranges so its consumers can
+resolve shared dependencies.
+
 ## What changes for a consuming repository
 
 - Update PRs wait until a release is three days old. Pins, digests,
@@ -30,7 +46,9 @@ onboarding PR for a new repository extends this preset automatically.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
-- Renovate pins GitHub Actions and Docker images to digests.
+- Renovate pins GitHub Actions and Docker images, dev container images
+  included, to digests. Dev container features keep their tags because
+  the dev container CLI rejects a feature pinned by tag and digest.
 - A `# renovate: datasource=… depName=…` comment above a `*_VERSION`
   variable in a workflow or action file lets Renovate update that
   version.

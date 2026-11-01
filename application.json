@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Shared Renovate policy for alunduil's applications: the default preset plus exact-version pins.",
+  "extends": [
+    "github>alunduil/renovate-config",
+    ":pinAllExceptPeerDependencies"
+  ]
+}
