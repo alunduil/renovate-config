@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Automerge major updates to runner images, GitHub Actions, and pre-commit hooks once required checks pass. Extend beside the default or application preset.",
+  "packageRules": [
+    {
+      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
+      "matchManagers": ["github-actions", "pre-commit"],
+      "matchUpdateTypes": ["major"],
+      "automerge": true
+    }
+  ]
+}

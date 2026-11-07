@@ -38,6 +38,33 @@ Renovate opens a PR pinning every range except `peerDependencies` and
 library stays on the default, keeping its ranges so its consumers can
 resolve shared dependencies.
 
+## Automerge workflow majors
+
+Add the `automerge-workflow-majors` preset beside the default or
+`application` preset:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:automerge-workflow-majors"
+  ]
+}
+```
+
+Renovate then merges major updates to runner images, GitHub Actions,
+and pre-commit hooks once the required checks pass. A failing PR stays
+open and requests review. Majors to runtime dependencies still wait for
+review.
+
+A repository is ready to extend it when both hold:
+
+- A required check on every PR runs each workflow those updates touch.
+  A runner or action major in a workflow no PR runs, such as a deploy,
+  would first run after merge, on the default branch.
+- The branch ruleset lets Renovate merge.
+
 ## What changes for a consuming repository
 
 - Update PRs wait until a release is three days old. Pins, digests,
