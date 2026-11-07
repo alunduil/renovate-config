@@ -40,8 +40,18 @@ resolve shared dependencies.
 
 ## Automerge workflow majors
 
-Add the `automerge-workflow-majors` preset beside the default or
-`application` preset:
+The `automerge-workflow-majors` preset merges major updates to runner
+images, GitHub Actions, and pre-commit hooks once required checks pass.
+Other majors still wait for review.
+
+Extend it only when both hold:
+
+- A required check on every PR runs each workflow these updates touch.
+  Otherwise a major in a workflow no PR runs, such as a deploy, first
+  runs after merge, on the default branch.
+- The branch ruleset lets Renovate merge.
+
+Add it beside the default or `application` preset:
 
 ```json
 {
@@ -52,18 +62,6 @@ Add the `automerge-workflow-majors` preset beside the default or
   ]
 }
 ```
-
-Renovate then merges major updates to runner images, GitHub Actions,
-and pre-commit hooks once the required checks pass. A failing PR stays
-open and requests review. Majors to runtime dependencies still wait for
-review.
-
-A repository is ready to extend it when both hold:
-
-- A required check on every PR runs each workflow those updates touch.
-  A runner or action major in a workflow no PR runs, such as a deploy,
-  would first run after merge, on the default branch.
-- The branch ruleset lets Renovate merge.
 
 ## What changes for a consuming repository
 
