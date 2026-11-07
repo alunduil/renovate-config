@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Opt-in automerge for major updates that only change CI.",
+  "packageRules": [
+    {
+      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
+      "matchManagers": ["github-actions", "pre-commit"],
+      "matchUpdateTypes": ["major"],
+      "automerge": true
+    }
+  ]
+}
