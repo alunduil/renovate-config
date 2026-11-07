@@ -40,7 +40,7 @@
       "pinDigests": true
     },
     {
-      "description": "mise lock generates these files; the mise manager regenerates them with the digest that mise.lock records",
+      "description": "mise lock writes these files and mise.lock records their digest, so only the mise manager can change them without breaking locked installs",
       "matchManagers": ["pep621"],
       "matchFileNames": [".mise/locks/**"],
       "enabled": false
