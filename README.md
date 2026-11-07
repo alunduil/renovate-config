@@ -79,6 +79,8 @@ Add it beside the default or `application` preset:
   version.
 - Pre-commit hook updates, OSV vulnerability alerts, and weekly lock
   file maintenance are on.
+- Renovate changes the files `mise lock` writes under `.mise/locks/`
+  only together with `mise.lock`, which records their digest.
 - Every PR carries the `dependencies` label, an OpenSSF Scorecard
   column, and a review request for alunduil.
 - PRs open as soon as the wait clears, at most two per hour, against

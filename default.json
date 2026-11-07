@@ -38,6 +38,12 @@
       "matchManagers": ["devcontainer"],
       "matchDepTypes": ["image"],
       "pinDigests": true
+    },
+    {
+      "description": "mise lock writes these files and mise.lock records their digest, so only the mise manager can change them without breaking locked installs",
+      "matchManagers": ["pep621"],
+      "matchFileNames": [".mise/locks/**"],
+      "enabled": false
     }
   ]
 }
