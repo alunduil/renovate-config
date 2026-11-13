@@ -65,16 +65,15 @@ Add it beside the default or `application` preset:
 
 ## What changes for a consuming repository
 
-- Renovate opens no branch until a release is three days old. Pins,
-  digests, and lock file maintenance carry no release date, so they
-  skip the wait.
+- Update PRs wait until a release is three days old. Pins, digests,
+  and lock file maintenance carry no release date, so they skip the
+  wait.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
-- Renovate merges an automerge PR as soon as the branch ruleset allows
-  it. The ruleset's required checks are the only gate: a check it
-  doesn't require can fail or hang without holding the merge. Keep
-  automerge off in a repository without required checks.
+- Automerge PRs merge once the branch ruleset's required checks pass,
+  whatever other checks report. Keep automerge off in a repository
+  without required checks.
 - Renovate pins GitHub Actions and Docker images, dev container images
   included, to digests. Dev container features keep their tags because
   the dev container CLI rejects a feature pinned by tag and digest.
