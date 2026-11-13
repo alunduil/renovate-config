@@ -40,8 +40,8 @@ repos:
     hooks:
       - id: reuse
 
-  # The default `files` pattern matches renovate.json, not the presets.
-  # Every JSON file at the root is a preset.
+  # The default `files` pattern skips the presets, which are every JSON file
+  # at the root except renovate.json.
   # Without --no-global, the validator checks a named file as self-hosted
   # global config, not repo config.
   #
