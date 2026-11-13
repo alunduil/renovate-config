@@ -17,6 +17,8 @@
   },
   "minimumReleaseAge": "3 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "internalChecksFilter": "strict",
+  "ignoreTests": true,
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {

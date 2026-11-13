@@ -68,6 +68,12 @@ Add it beside the default or `application` preset:
 - Update PRs wait until a release is three days old. Pins, digests,
   and lock file maintenance carry no release date, so they skip the
   wait.
+- Renovate opens no branch for a release still inside the wait, so the
+  wait holds without a status check.
+- Renovate merges an automerge PR as soon as the branch ruleset allows
+  it. The ruleset's required checks are the only gate: a check it
+  doesn't require can fail or hang without holding the merge. Keep
+  automerge off in a repository without required checks.
 - Releases from registries that publish no dates, such as Hackage,
   also skip the wait. The Dependency Dashboard lists this as a warning
   under Repository Problems.
