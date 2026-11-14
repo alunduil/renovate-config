@@ -38,30 +38,47 @@ Renovate opens a PR pinning every range except `peerDependencies` and
 library stays on the default, keeping its ranges so its consumers can
 resolve shared dependencies.
 
-## Automerge workflow majors
+## Automerge updates
 
-The `automerge-workflow-majors` preset merges major updates to runner
-images, GitHub Actions, and pre-commit hooks once required checks pass.
-Other majors still wait for review.
-
-Extend it only when both hold:
-
-- A required check on every PR runs each workflow these updates touch.
-  Otherwise a major in a workflow no PR runs, such as a deploy, first
-  runs after merge, on the default branch.
-- The branch ruleset lets Renovate merge.
-
-Add it beside the default or `application` preset:
+Two opt-in presets merge updates once required checks pass. Extend
+either one only when the branch ruleset lets Renovate merge. Add them
+beside the default or `application` preset, keeping this order when
+extending both:
 
 ```json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:automerge-minor",
     "github>alunduil/renovate-config:automerge-workflow-majors"
   ]
 }
 ```
+
+Listed last, `automerge-minor` holds workflow majors for review,
+because Renovate marks every major as breaking.
+
+### Minor updates
+
+The `automerge-minor` preset merges minor, patch, and pin updates, and
+lock file maintenance. Updates the versioning scheme marks as breaking,
+such as a semver 0.x minor, still wait for review.
+
+Extend it only when required checks on every PR catch a broken
+dependency update. A scheme without a breaking-change rule, such as
+`loose` or `regex`, treats only majors as breaking, so its 0.x minors
+merge on checks alone.
+
+### Workflow majors
+
+The `automerge-workflow-majors` preset merges major updates to runner
+images, GitHub Actions, and pre-commit hooks. Other majors still wait
+for review.
+
+Extend it only when a required check on every PR runs each workflow
+these updates touch. Otherwise a major in a workflow no PR runs, such
+as a deploy, first runs after merge, on the default branch.
 
 ## What changes for a consuming repository
 
