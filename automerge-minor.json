@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Opt-in automerge for non-breaking minor, patch, and pin updates.",
+  "extends": [":automergeMinor"],
+  "packageRules": [
+    {
+      "description": "The versioning scheme marks these updates as breaking, such as a semver 0.x minor, so they wait for review",
+      "matchIsBreaking": true,
+      "automerge": false
+    }
+  ]
+}
