@@ -59,6 +59,12 @@ extending both:
 Listed last, `automerge-minor` holds workflow majors for review,
 because Renovate marks every major as breaking.
 
+Updates to a release job, `.github/workflows/release.yml` and the
+composite actions under `.github/actions/`, wait for review under
+either preset. Runner images are the exception. See [Automerge
+policy](docs/explanation/automerge-policy.md) for which updates wait
+and why.
+
 ### Minor updates
 
 The `automerge-minor` preset merges minor, patch, and pin updates, and
@@ -79,6 +85,13 @@ for review.
 Extend it only when a required check on every PR runs each workflow
 these updates touch. Otherwise a major in a workflow no PR runs, such
 as a deploy, first runs after merge, on the default branch.
+
+### Bundled dependencies
+
+The `hold-bundled-dependencies` preset holds runtime dependency
+updates for review under either automerge preset. Extend it when the
+repository's package bundles its runtime dependencies, so their code
+ships in the release.
 
 ## What changes for a consuming repository
 
