@@ -59,11 +59,9 @@ extending both:
 Listed last, `automerge-minor` holds workflow majors for review,
 because Renovate marks every major as breaking.
 
-Updates to a release job, `.github/workflows/release.yml` and the
-composite actions under `.github/actions/`, wait for review under
-either preset. Runner images are the exception. See [Automerge
-policy](docs/explanation/automerge-policy.md) for which updates wait
-and why.
+Updates to what a release job runs wait for review under either
+preset. See [Automerge policy](docs/explanation/automerge-policy.md)
+for which updates wait and why.
 
 ### Minor updates
 
