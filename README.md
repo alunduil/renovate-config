@@ -59,9 +59,11 @@ extending both:
 Listed last, `automerge-minor` holds workflow majors for review,
 because Renovate marks every major as breaking.
 
-Updates to what a release job runs wait for review under either
-preset. See [Automerge policy](docs/explanation/automerge-policy.md)
-for which updates wait and why.
+Updates in `.github/workflows/release.yml` and `.github/actions/**`,
+other than runner images, wait for review under either preset,
+because a release job runs them beside its publishing credential.
+Renovate can't tell which workflows call a composite action, so CI-only
+updates to a shared setup action wait too.
 
 ### Minor updates
 
@@ -89,7 +91,8 @@ as a deploy, first runs after merge, on the default branch.
 The `hold-bundled-dependencies` preset holds runtime dependency
 updates for review under either automerge preset. Extend it when the
 repository's package bundles its runtime dependencies and so ships
-their code.
+their code. It covers npm, Cargo, Poetry, and PEP 621 runtime
+dependencies; lock file maintenance still automerges.
 
 ## What changes for a consuming repository
 
