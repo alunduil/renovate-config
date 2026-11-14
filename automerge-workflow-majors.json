@@ -3,14 +3,16 @@
   "description": "Opt-in automerge for major updates that only change CI.",
   "packageRules": [
     {
-      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook. Release jobs and the composite actions they call stay held for review.",
+      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
       "matchManagers": ["github-actions", "pre-commit"],
       "matchUpdateTypes": ["major"],
-      "matchFileNames": [
-        "!.github/workflows/release.yml",
-        "!.github/actions/**"
-      ],
       "automerge": true
+    },
+    {
+      "description": "Repeats default.json's release-job hold, which the rule above would otherwise override because it comes later",
+      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
+      "matchDatasources": ["!github-runners"],
+      "automerge": false
     }
   ]
 }
