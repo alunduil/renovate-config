@@ -43,7 +43,7 @@ jobs:
       startsWith(github.head_ref, 'renovate/')
       && github.event.pull_request.head.repo.full_name == github.repository
       && github.event.sender.login != 'alunduil-hook-fix[bot]'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     permissions:
       contents: read
@@ -116,7 +116,7 @@ jobs:
     name: Push hook fixes to the Renovate branch
     needs: hooks
     if: needs.hooks.outputs.has-fixes == 'true'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     concurrency:
       group: fix-renovate-hooks-${{ github.head_ref }}
