@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Opt-in review hold for runtime dependencies, for repositories whose package bundles them.",
+  "packageRules": [
+    {
+      "description": "A bundled dependency's code ships inside the package, where the release approval can't see it",
+      "matchDepTypes": ["dependencies", "project.dependencies"],
+      "automerge": false
+    }
+  ]
+}

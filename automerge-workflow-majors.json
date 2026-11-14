@@ -7,6 +7,12 @@
       "matchManagers": ["github-actions", "pre-commit"],
       "matchUpdateTypes": ["major"],
       "automerge": true
+    },
+    {
+      "description": "Repeats default.json's release-job hold, which the rule above overrides because it applies later",
+      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
+      "matchDatasources": ["!github-runners"],
+      "automerge": false
     }
   ]
 }

@@ -45,6 +45,12 @@
       "matchManagers": ["pep621"],
       "matchFileNames": [".mise/locks/**"],
       "enabled": false
+    },
+    {
+      "description": "A release job runs these beside the credential it publishes with. Runner images are exempt because GitHub also issues that job's OIDC token. automerge-workflow-majors repeats this rule; change both.",
+      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
+      "matchDatasources": ["!github-runners"],
+      "automerge": false
     }
   ]
 }
