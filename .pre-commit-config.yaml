@@ -48,7 +48,7 @@ repos:
   # Presets in `extends` go unresolved, so a misspelt name passes here and
   # fails only on the next Renovate run.
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 44.229.0
+    rev: 44.234.1
     hooks:
       - id: renovate-config-validator
         files: ^[^/]+\.json$
