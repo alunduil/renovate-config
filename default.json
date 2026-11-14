@@ -47,7 +47,7 @@
       "enabled": false
     },
     {
-      "description": "A release job runs these beside the credential it publishes with, so a repointed tag or compromised release would run with that credential. Runner images come from GitHub, which also issues the release job's OIDC token.",
+      "description": "A release job runs these beside the credential it publishes with. Runner images are exempt because GitHub also issues that job's OIDC token.",
       "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
       "matchDatasources": ["!github-runners"],
       "automerge": false

@@ -88,8 +88,8 @@ as a deploy, first runs after merge, on the default branch.
 
 The `hold-bundled-dependencies` preset holds runtime dependency
 updates for review under either automerge preset. Extend it when the
-repository's package bundles its runtime dependencies, so their code
-ships in the release.
+repository's package bundles its runtime dependencies and so ships
+their code.
 
 ## What changes for a consuming repository
 
