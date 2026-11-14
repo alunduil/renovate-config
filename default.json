@@ -45,6 +45,12 @@
       "matchManagers": ["pep621"],
       "matchFileNames": [".mise/locks/**"],
       "enabled": false
+    },
+    {
+      "description": "A release job runs these beside the credential it publishes with, so a repointed tag or compromised release would run with that credential. Runner images come from GitHub, which also issues the release job's OIDC token.",
+      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
+      "matchDatasources": ["!github-runners"],
+      "automerge": false
     }
   ]
 }

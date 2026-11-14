@@ -3,9 +3,13 @@
   "description": "Opt-in automerge for major updates that only change CI.",
   "packageRules": [
     {
-      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
+      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook. Release jobs and the composite actions they call stay held for review.",
       "matchManagers": ["github-actions", "pre-commit"],
       "matchUpdateTypes": ["major"],
+      "matchFileNames": [
+        "!.github/workflows/release.yml",
+        "!.github/actions/**"
+      ],
       "automerge": true
     }
   ]
