@@ -56,9 +56,8 @@ extending both:
 }
 ```
 
-Renovate marks every major as breaking. Listed after
-`automerge-workflow-majors`, the `automerge-minor` hold on breaking
-updates stops workflow majors from merging.
+Listed last, `automerge-minor` holds workflow majors for review,
+because Renovate marks every major as breaking.
 
 ### Minor updates
 
