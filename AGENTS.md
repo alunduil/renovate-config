@@ -6,13 +6,12 @@ Renovate on this repository itself.
 
 ## A preset change reaches consumers unreviewed
 
-Consumers extend `github>alunduil/renovate-config` (or a named preset
-such as `:application`) without a tag, so they float on `main`. The
-repository cuts no releases. A change merged to `default.json` reaches
-every consuming repository on its next Renovate run, with no PR in any
-of them. A change to an opt-in preset reaches every repository that
-extends it. Weigh each preset change as a change to all of those
-repositories at once.
+A change merged to `default.json` reaches every consuming repository on
+its next Renovate run, with no PR in any of them. A change to an opt-in
+preset reaches every repository that extends it. Consumers extend
+`github>alunduil/renovate-config` (or a named preset such as
+`:application`) without a tag, so they float on `main`. The repository
+cuts no releases.
 
 ## Validate presets
 
@@ -31,6 +30,5 @@ preset name passes locally and fails only on the next Renovate run.
 ## Document effects, not JSON
 
 The README describes what a preset changes for a consuming repository:
-which PRs open, when they merge, what waits for review. It does not
-restate the JSON. Update the matching README section with every
-user-visible preset change.
+which PRs open, when they merge, what waits for review. Update the
+matching README section with every user-visible preset change.
