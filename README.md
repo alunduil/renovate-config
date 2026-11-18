@@ -94,6 +94,30 @@ repository's package bundles its runtime dependencies and so ships
 their code. It covers npm, Cargo, Poetry, and PEP 621 runtime
 dependencies; lock file maintenance still automerges.
 
+## Update GHC in a Haskell library
+
+Extend the `haskell` preset beside the default:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:haskell"
+  ]
+}
+```
+
+Renovate opens a PR when GHC releases a patch for an exact version in
+a cabal file's `tested-with`. It ignores wildcards and ranges. Workflow
+variables annotated with `depName=ghc/ghc` update the same way.
+
+Updates stay within a series: `9.12.2` can become `9.12.4`, never
+`9.14.1`. Add a new series to `tested-with` yourself.
+
+Each update is a patch, so `automerge-minor` merges it once checks
+pass.
+
 ## What changes for a consuming repository
 
 - Update PRs wait until a release is three days old. Pins, digests,
