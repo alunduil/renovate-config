@@ -1,9 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in GHC updates for Haskell libraries: exact tested-with versions and ghc/ghc annotations, each kept within its series.",
+  "description": "Opt-in GHC patch updates for Haskell libraries.",
   "customManagers": [
     {
-      "description": "Each exact GHC version in tested-with, whose items follow the field name, a comma, a || or a line break",
+      "description": "Requiring a separator before GHC skips impl(GHC == …) conditionals, which aren't tested versions",
       "customType": "regex",
       "managerFilePatterns": ["/\\.cabal$/"],
       "matchStrings": [
@@ -15,7 +15,7 @@
   ],
   "packageRules": [
     {
-      "description": "Each GHC version moves only within its series; a library adds a new series by hand. Release tags wrap the version as ghc-X.Y.Z-release.",
+      "description": "Supporting a new GHC series is a decision for the library, not an update",
       "matchDatasources": ["github-tags"],
       "matchDepNames": ["ghc/ghc"],
       "versioning": "regex:^(?<compatibility>\\d+\\.\\d+)\\.(?<patch>\\d+)$",

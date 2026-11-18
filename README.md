@@ -108,17 +108,15 @@ Extend the `haskell` preset beside the default:
 }
 ```
 
-Renovate updates each exact version, such as `GHC == 9.12.2`, in a
-cabal file's `tested-with` from `ghc/ghc` release tags. Wildcards and
-ranges, such as `GHC == 9.12.*`, stay unchanged. The same rule covers
-`# renovate: … depName=ghc/ghc` annotations in workflows.
+Renovate opens a PR when GHC releases a patch for an exact version in
+a cabal file's `tested-with`. It ignores wildcards and ranges. Workflow
+variables annotated with `depName=ghc/ghc` update the same way.
 
-Each version moves only within its series, so `9.12.2` becomes `9.12.4`
-but never `9.14.1`. Add a new series to `tested-with` by hand.
+Updates stay within a series: `9.12.2` can become `9.12.4`, never
+`9.14.1`. Add a new series to `tested-with` yourself.
 
-Each update counts as a patch, so `automerge-minor` merges it once
-checks pass. An update in `.github/workflows/release.yml` still waits
-for review.
+Each update is a patch, so `automerge-minor` merges it once checks
+pass.
 
 ## What changes for a consuming repository
 
