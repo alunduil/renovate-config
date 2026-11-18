@@ -116,6 +116,10 @@ ranges, such as `GHC == 9.12.*`, stay unchanged. The same rule covers
 Each version moves only within its series, so `9.12.2` becomes `9.12.4`
 but never `9.14.1`. Add a new series to `tested-with` by hand.
 
+Each update counts as a patch, so `automerge-minor` merges it once
+checks pass. An update in `.github/workflows/release.yml` still waits
+for review.
+
 ## What changes for a consuming repository
 
 - Update PRs wait until a release is three days old. Pins, digests,
