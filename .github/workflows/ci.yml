@@ -32,3 +32,14 @@ jobs:
         uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
         with:
           prek-version: 'v0.5.10'
+
+  # Calls the local copy so hook-fix-selftest.yml tests the commit under
+  # review.
+  fix-renovate-hooks:
+    name: Fix hooks on the Renovate branch
+    uses: ./.github/workflows/fix-renovate-hooks.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      hook-runner: prek
