@@ -1,4 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>alunduil/renovate-config"]
+  "extends": [
+    "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:automerge-minor",
+    "github>alunduil/renovate-config:automerge-workflow-majors"
+  ]
 }
