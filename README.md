@@ -77,10 +77,9 @@ dependency update. A scheme without a breaking-change rule, such as
 merge on checks alone.
 
 Patch updates to `prek` pinned in `mise.toml` merge despite its 0.x
-version; its 0.x minors still wait for review. Extend the preset in a
-repository that pins `prek` only when a required check runs
-`prek run --all-files`. Otherwise set `automerge: false` for `prek` in
-the repository's `renovate.json`.
+version; its 0.x minors still wait for review. A repository that pins
+`prek` needs a required check running `prek run --all-files`. Without
+one, set `automerge: false` for `prek` in its `renovate.json`.
 
 ### Workflow majors
 
