@@ -10,6 +10,13 @@
       "description": "A breaking change, such as a semver 0.x minor, can pass every check and still break behaviour no test covers",
       "matchIsBreaking": true,
       "automerge": false
+    },
+    {
+      "description": "A repository pinning prek runs its hooks with it in CI, so a required check exercises a 0.x patch before merge",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["prek"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
     }
   ]
 }

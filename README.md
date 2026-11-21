@@ -76,6 +76,12 @@ dependency update. A scheme without a breaking-change rule, such as
 `loose` or `regex`, treats only majors as breaking, so its 0.x minors
 merge on checks alone.
 
+Patch updates to `prek` pinned in `mise.toml` merge despite its 0.x
+version; its 0.x minors still wait for review. Extend the preset in a
+repository that pins `prek` only when a required check runs
+`prek run --all-files`. Otherwise set `automerge: false` for `prek` in
+the repository's `renovate.json`.
+
 ### Workflow majors
 
 The `automerge-workflow-majors` preset merges major updates to runner
