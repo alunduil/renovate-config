@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
 ---
-# Opens throwaway renovate/hook-fix-selftest-* pull requests and checks what
-# CI's call to that commit's fix-renovate-hooks.yml does on each. They're
-# opened as the alunduil-hook-fix-selftest App because GITHUB_TOKEN's events
-# start no workflows and the hook-fix App's are skipped.
+# Tests fix-renovate-hooks.yml end to end on throwaway
+# renovate/hook-fix-selftest-* pull requests. The alunduil-hook-fix-selftest
+# App opens them: GITHUB_TOKEN's events start no workflows, and
+# fix-renovate-hooks.yml skips the hook-fix App's.
 #
 # alunduil-infrastructure's hook-fix-selftest provider admits only this file's
 # job_workflow_ref, so renaming or moving it revokes the App's credentials.
@@ -32,7 +32,8 @@ jobs:
       run: ${{ steps.scope.outputs.run }}
 
     steps:
-      # The self-test's own pull requests skip, or each would open three more.
+      # Skip the self-test's own pull requests, which would each open three
+      # more.
       - name: Check changed files
         id: scope
         env:
@@ -121,8 +122,8 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: .github/scripts/hook-fix-selftest.sh cleanup
 
-  # The stable check to require: a matrix emits one context per case, and a
-  # skipped self-test passes.
+  # Require this job, not the matrix: the matrix emits one context per case,
+  # and this job passes when the self-test skips.
   report:
     name: Report the hook-fix self-test
     needs: [scope, selftest]

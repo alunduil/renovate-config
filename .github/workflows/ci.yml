@@ -33,7 +33,8 @@ jobs:
         with:
           prek-version: 'v0.5.10'
 
-  # The local copy, so hook-fix-selftest.yml tests the commit under review.
+  # Calls the local copy so hook-fix-selftest.yml tests the commit under
+  # review.
   fix-renovate-hooks:
     name: Fix hooks on the Renovate branch
     uses: ./.github/workflows/fix-renovate-hooks.yml

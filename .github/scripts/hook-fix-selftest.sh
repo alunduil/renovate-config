@@ -4,9 +4,8 @@
 #
 # Runs one hook-fix self-test case against CI's call to fix-renovate-hooks.yml.
 #
-#   run      Branch BRANCH from BASE_SHA, plant CASE's change, open a pull
-#            request, wait for CI, and assert the outcome.
-#   cleanup  Close the pull request and delete BRANCH.
+#   run      Run CASE on BRANCH and assert its outcome.
+#   cleanup  Close BRANCH's pull request and delete BRANCH.
 #
 # Environment:
 #   GH_TOKEN       alunduil-hook-fix-selftest installation token
@@ -36,8 +35,6 @@ branch_head() {
   gh api "${REPO_API}/git/ref/heads/${BRANCH}" --jq .object.sha
 }
 
-# Prints the ID of CI's completed pull request run on a commit, or fails after
-# CI_TIMEOUT_SECONDS.
 wait_for_ci() {
   local sha=$1 deadline=$((SECONDS + CI_TIMEOUT_SECONDS)) run
   while ((SECONDS < deadline)); do
@@ -77,9 +74,10 @@ expect_fix_commit() {
     fail "expected one '${FIX_MESSAGE}' commit by ${FIX_AUTHOR} on ${planted_sha}, got '${fix_commit}'"
 }
 
-# Each case defines <case>_path, the file it changes; <case>_addition, the
-# text it appends there; and <case>_expect, its assertions on CI's run of the
-# planted commit.
+# A case is three functions, called by name:
+#   <case>_path      the file it changes
+#   <case>_addition  the text it appends to that file
+#   <case>_expect    its assertions, given the planted SHA and CI's run ID
 
 whitespace_path() { echo REUSE.toml; }
 whitespace_addition() { printf '# hook-fix self-test   \n'; }
@@ -102,8 +100,8 @@ clean_expect() {
   expect_unchanged "$1"
 }
 
-# The App can't write .github/workflows/, so this case plants a hook that
-# edits a workflow file and leaves the fix to the hooks job.
+# The App can't write .github/workflows/. This case plants a hook instead,
+# and the hooks job's run of it edits a workflow file.
 workflow_path() { echo .pre-commit-config.yaml; }
 workflow_addition() {
   cat <<'EOF'
@@ -128,7 +126,6 @@ create_branch() {
     -f ref="refs/heads/${BRANCH}" -f sha="${BASE_SHA}" >/dev/null
 }
 
-# Prints the planted commit's SHA.
 plant() {
   local path file content
   path="$("${CASE}_path")"
