@@ -76,10 +76,14 @@ dependency update. A scheme without a breaking-change rule, such as
 `loose` or `regex`, treats only majors as breaking, so its 0.x minors
 merge on checks alone.
 
-Patch updates to `prek` pinned in `mise.toml` merge despite its 0.x
-version; its 0.x minors still wait for review. A repository that pins
-`prek` needs a required check running `prek run --all-files`. Without
-one, set `automerge: false` for `prek` in its `renovate.json`.
+The preset also merges patch updates to the `prek` version in
+`mise.toml`, though Renovate marks every 0.x update as breaking. Minor
+updates to `prek` still wait for review.
+
+A repository that pins `prek` needs a required check that runs
+`prek run --all-files`, since only that check catches a broken patch.
+Without one, set `automerge: false` for `prek` in the repository's
+`renovate.json`.
 
 ### Workflow majors
 

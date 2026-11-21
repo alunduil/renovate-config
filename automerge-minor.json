@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates, and prek patches.",
+  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates. Also merges prek patches.",
   "lockFileMaintenance": { "automerge": true },
   "minor": { "automerge": true },
   "patch": { "automerge": true },
@@ -12,7 +12,7 @@
       "automerge": false
     },
     {
-      "description": "prek runs the repository's own hooks, so a required check running them exercises a 0.x patch before merge",
+      "description": "A consumer pinning prek runs its hooks with prek in a required check, which catches a broken 0.x patch before merge",
       "matchManagers": ["mise"],
       "matchDepNames": ["prek"],
       "matchUpdateTypes": ["patch"],
