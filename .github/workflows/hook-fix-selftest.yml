@@ -1,0 +1,143 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+# Opens throwaway renovate/hook-fix-selftest-* pull requests and checks what
+# CI's call to that commit's fix-renovate-hooks.yml does on each. They're
+# opened as the alunduil-hook-fix-selftest App because GITHUB_TOKEN's events
+# start no workflows and the hook-fix App's are skipped.
+#
+# alunduil-infrastructure's hook-fix-selftest provider admits only this file's
+# job_workflow_ref, so renaming or moving it revokes the App's credentials.
+name: Hook-fix selftest
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+      timezone: Europe/London
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  scope:
+    name: Decide whether the hook-fix self-test runs
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+
+    steps:
+      # The self-test's own pull requests skip, or each would open three more.
+      - name: Check changed files
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SELFTEST_PATHS: >-
+            \.github/(workflows/(ci|fix-renovate-hooks|hook-fix-selftest)\.yml|scripts/hook-fix-selftest\.sh)
+        run: |
+          run=false
+          if [ "${EVENT_NAME}" != pull_request ]; then
+            run=true
+          elif [[ "${HEAD_REF}" != renovate/hook-fix-selftest-* && "${HEAD_REPO}" == "${GITHUB_REPOSITORY}" ]]; then
+            files="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename')"
+            if grep -qxE "${SELFTEST_PATHS}" <<< "${files}"; then
+              run=true
+            fi
+          fi
+          echo "run=${run}" >> "${GITHUB_OUTPUT}"
+
+  selftest:
+    name: Self-test hook fixes (${{ matrix.case }})
+    needs: scope
+    if: needs.scope.outputs.run == 'true'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        case: [whitespace, clean, workflow]
+    env:
+      CASE: ${{ matrix.case }}
+      BRANCH: renovate/hook-fix-selftest-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.case }}
+      # A pull request's head carries the fix-renovate-hooks.yml under review.
+      BASE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.BASE_SHA }}
+          persist-credentials: false
+
+      # Identifiers from alunduil-infrastructure's bootstrap outputs
+      # hook_fix_selftest_workload_identity_provider and
+      # hook_fix_selftest_reader_email.
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: projects/654280143615/locations/global/workloadIdentityPools/hook-fix-selftest/providers/github-provider
+          service_account: hook-fix-selftest-reader@alunduil.iam.gserviceaccount.com
+
+      - name: Read App credentials
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3.0.0
+        with:
+          secrets: |-
+            app-id:alunduil/hook-fix-selftest-app-id
+            private-key:alunduil/hook-fix-selftest-app-private-key
+
+      - name: Create App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ steps.secrets.outputs.app-id }}
+          private-key: ${{ steps.secrets.outputs.private-key }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Run the case
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ACTIONS_TOKEN: ${{ github.token }}
+        run: .github/scripts/hook-fix-selftest.sh run
+
+      # always() also runs on cancellation, so no branch outlives its run.
+      - name: Delete the self-test branch
+        if: always() && steps.app-token.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: .github/scripts/hook-fix-selftest.sh cleanup
+
+  # The stable check to require: a matrix emits one context per case, and a
+  # skipped self-test passes.
+  report:
+    name: Report the hook-fix self-test
+    needs: [scope, selftest]
+    if: always()
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions: {}
+
+    steps:
+      - name: Check self-test results
+        env:
+          SCOPE: ${{ needs.scope.result }}
+          SELFTEST: ${{ needs.selftest.result }}
+        run: |
+          if [ "${SCOPE}" != success ] || [[ "${SELFTEST}" != success && "${SELFTEST}" != skipped ]]; then
+            echo "::error::Hook-fix self-test: scope ${SCOPE}, cases ${SELFTEST}"
+            exit 1
+          fi
