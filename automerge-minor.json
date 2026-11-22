@@ -12,8 +12,7 @@
       "automerge": false
     },
     {
-      "description": "A consumer pinning prek runs its hooks with prek in a required check, which catches a broken 0.x patch before merge",
-      "matchManagers": ["mise"],
+      "description": "Consumers that pin prek run it in a required check, so a broken 0.x patch fails before merge. Renovate updates every prek pin in one PR, so that check tests all of them",
       "matchDepNames": ["prek"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
