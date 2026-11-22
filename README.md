@@ -76,10 +76,9 @@ dependency update. A scheme without a breaking-change rule, such as
 `loose` or `regex`, treats only majors as breaking, so its 0.x minors
 merge on checks alone.
 
-The preset also merges patch updates to `prek`, though Renovate marks
-every 0.x update as breaking. This covers every pin Renovate finds:
-`mise.toml`, a `prek-version` action input, and an annotated
-`PREK_VERSION` variable. Minor updates to `prek` still wait for review.
+Renovate marks every 0.x update as breaking, patches included. The
+exception is `prek`: the preset merges its patch updates wherever a
+repository pins it. Minor updates to `prek` wait for review.
 
 A repository that pins `prek` needs a required check that runs
 `prek run --all-files`, since only that check catches a broken patch.
