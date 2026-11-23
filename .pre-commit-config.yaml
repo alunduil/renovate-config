@@ -59,3 +59,12 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
+
+  - repo: local
+    hooks:
+      - id: hook-fix-selftest
+        name: Edit a workflow file
+        language: system
+        entry: sh -c 'echo "# hook-fix self-test" >> .github/workflows/pr-title.yml'
+        pass_filenames: false
+        always_run: true
