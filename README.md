@@ -182,19 +182,18 @@ pass.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
 
-## Find PRs that need review
+## Find PRs that need attention
 
-Who requests review depends on automerge and CODEOWNERS:
+Failed PRs appear under `Needs me` on alunduil's Inbox board, beside
+passing ones. Review requests don't identify them:
 
 - With automerge off, Renovate requests review from alunduil when the
   PR opens.
-- With automerge on, Renovate requests no review, even when a required
-  check fails. To merge whatever unrequired checks report, Renovate
-  ignores check results, so it can't tell which PRs failed. Look for
-  them under `Needs me` on alunduil's Inbox board, which also lists
-  passing PRs.
-- With a CODEOWNERS file, GitHub requests code-owner review on every PR
-  that touches an owned path, passing or failing.
+- With automerge on, Renovate requests no review, even after a required
+  check fails. It ignores check results so that an unrequired check
+  can't stall a merge.
+- With a CODEOWNERS file, GitHub requests code-owner review on passing
+  and failing PRs that touch an owned path.
 
 ## Override the preset
 
