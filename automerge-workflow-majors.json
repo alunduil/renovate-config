@@ -3,7 +3,6 @@
   "description": "Opt-in automerge for major updates that only change CI. The release-job hold follows the automerge rule because later rules win, and a preset's own rules would come after every preset it extends.",
   "extends": [
     "github>alunduil/renovate-config:workflow-majors",
-    "github>alunduil/renovate-config:hold-release-job(.github/workflows/release.yml)",
-    "github>alunduil/renovate-config:hold-release-job(.github/actions/**)"
+    "github>alunduil/renovate-config:default-release-job-holds"
   ]
 }

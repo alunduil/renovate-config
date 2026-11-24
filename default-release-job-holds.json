@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "The release-job files held by default.",
+  "extends": [
+    "github>alunduil/renovate-config:hold-release-job(.github/workflows/release.yml)",
+    "github>alunduil/renovate-config:hold-release-job(.github/actions/**)"
+  ]
+}

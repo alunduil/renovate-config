@@ -5,8 +5,7 @@
     "config:best-practices",
     "security:openssf-scorecard",
     "customManagers:githubActionsVersions",
-    "github>alunduil/renovate-config:hold-release-job(.github/workflows/release.yml)",
-    "github>alunduil/renovate-config:hold-release-job(.github/actions/**)"
+    "github>alunduil/renovate-config:default-release-job-holds"
   ],
   "timezone": "Europe/London",
   "reviewers": ["alunduil"],
