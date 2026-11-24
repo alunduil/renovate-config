@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in automerge for major updates that only change CI. The release-job hold follows the automerge rule because later rules win, and a preset's own rules would come after every preset it extends.",
+  "description": "Opt-in automerge for major updates that only change CI. The automerge rule has its own preset because a rule in this file would apply after the hold and override it.",
   "extends": [
     "github>alunduil/renovate-config:automerge-workflow-majors-unheld",
     "github>alunduil/renovate-config:default-release-job-holds"

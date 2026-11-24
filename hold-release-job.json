@@ -1,9 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Review hold for a file a release job runs, named by path or glob.",
+  "description": "Review hold for the release-job files matching one path or glob.",
   "packageRules": [
     {
-      "description": "A release job runs this file beside the credential it publishes with. Runner images are exempt because GitHub also issues that job's OIDC token.",
+      "description": "A release job runs these files beside its publishing credential. Runner images are exempt because GitHub supplies them and already issues that job's OIDC token.",
       "matchFileNames": ["{{arg0}}"],
       "matchDatasources": ["!github-runners"],
       "automerge": false

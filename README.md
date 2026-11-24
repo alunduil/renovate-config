@@ -63,8 +63,8 @@ Updates in `.github/workflows/release.yml` and `.github/actions/**`,
 other than runner images, wait for review under either preset,
 because a release job runs them beside its publishing credential.
 Renovate can't tell which workflows call a composite action, so CI-only
-updates to a shared setup action wait too. To hold another file a
-release job runs, see [Release jobs](#release-jobs).
+updates to a shared setup action wait too. To hold other files, see
+[Release jobs](#release-jobs).
 
 ### Minor updates
 
@@ -110,9 +110,9 @@ dependencies; lock file maintenance still automerges.
 
 ### Release jobs
 
-The `hold-release-job` preset holds updates in the file it names for
-review, other than runner images. Extend it for each file a release job
-runs that the default preset doesn't hold, such as a deploy workflow:
+The `hold-release-job` preset makes updates in one file wait for
+review. Runner images are exempt. Extend it when a release job runs a
+file outside the default hold, such as a deploy workflow:
 
 ```json
 {
@@ -125,15 +125,12 @@ runs that the default preset doesn't hold, such as a deploy workflow:
 }
 ```
 
-List it after the automerge presets. Listed before
-`automerge-workflow-majors`, it lets majors in the file merge.
+List it after the automerge presets, whose rules otherwise override
+the hold. An automerge rule in the repository's own `renovate.json`
+also overrides it.
 
-Name one path or glob per entry, and add an entry for each further
-file. Renovate splits the argument at commas, so a list or a
-`{a,b}` glob holds nothing.
-
-A `packageRules` entry in the repository's `renovate.json` that turns
-automerge on overrides this hold and the default one.
+Add one entry per path or glob. Renovate splits the argument at commas,
+so a list holds only its first path, and a `{a,b}` glob holds nothing.
 
 ## Update GHC in a Haskell library
 
