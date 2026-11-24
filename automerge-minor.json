@@ -1,26 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates. Also merges prek patches, and 0.x pre-commit hook and GitHub Action updates.",
+  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates. Also merges 0.x updates to pre-commit hooks and GitHub Actions, and prek patches.",
   "lockFileMaintenance": { "automerge": true },
   "minor": { "automerge": true },
   "patch": { "automerge": true },
   "pin": { "automerge": true },
   "packageRules": [
     {
-      "description": "A breaking change, such as a semver 0.x minor, can pass every check and still break behaviour no test covers. Hooks and actions only change CI, and the PR's own checks run them",
+      "description": "A breaking change, such as a semver 0.x minor, can pass every check and still break behaviour no test covers. Hooks and actions are exempt because they only change CI",
       "matchManagers": ["!github-actions", "!pre-commit"],
       "matchIsBreaking": true,
       "automerge": false
     },
     {
-      "description": "A tool version in an action's inputs is a breaking change like any other tool's",
+      "description": "A tool needs the same review whether an action's input or another file pins it",
       "matchManagers": ["github-actions"],
       "matchDepTypes": ["uses-with"],
       "matchIsBreaking": true,
       "automerge": false
     },
     {
-      "description": "Majors automerge only under automerge-workflow-majors",
+      "description": "A major merges only in a repository that opts in by listing automerge-workflow-majors after this preset",
       "matchManagers": ["github-actions", "pre-commit"],
       "matchUpdateTypes": ["major"],
       "matchIsBreaking": true,
