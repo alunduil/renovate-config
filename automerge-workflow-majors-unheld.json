@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "The automerge rule behind automerge-workflow-majors, which lists the release-job hold after it. Extend that preset instead.",
+  "description": "automerge-workflow-majors without its release-job hold. Extend that preset instead.",
   "packageRules": [
     {
       "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
