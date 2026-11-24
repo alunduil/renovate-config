@@ -7,7 +7,22 @@
   "pin": { "automerge": true },
   "packageRules": [
     {
-      "description": "A breaking change, such as a semver 0.x minor, can pass every check and still break behaviour no test covers",
+      "description": "A breaking change, such as a semver 0.x minor, can pass every check and still break behaviour no test covers. Hooks and actions only change CI, and the PR's own checks run them",
+      "matchManagers": ["!github-actions", "!pre-commit"],
+      "matchIsBreaking": true,
+      "automerge": false
+    },
+    {
+      "description": "A tool version in an action's inputs is a breaking change like any other tool's",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["uses-with"],
+      "matchIsBreaking": true,
+      "automerge": false
+    },
+    {
+      "description": "Majors automerge only under automerge-workflow-majors",
+      "matchManagers": ["github-actions", "pre-commit"],
+      "matchUpdateTypes": ["major"],
       "matchIsBreaking": true,
       "automerge": false
     },
@@ -16,20 +31,6 @@
       "matchDepNames": ["prek"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
-    },
-    {
-      "description": "A 0.x hook or action only changes CI, and the PR's own checks run it. uses-with is excluded because it covers tools such as prek, whose minors wait for review. Majors belong to automerge-workflow-majors",
-      "matchManagers": ["github-actions", "pre-commit"],
-      "matchDepTypes": ["!uses-with"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchIsBreaking": true,
-      "automerge": true
-    },
-    {
-      "description": "Repeats default.json's release-job hold, which the rules above override because they apply later",
-      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
-      "matchDatasources": ["!github-runners"],
-      "automerge": false
     }
   ]
 }
