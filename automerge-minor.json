@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates. Also merges prek patches.",
+  "description": "Opt-in automerge for non-breaking minor, patch, pin, and lock file updates. Also merges prek patches, and 0.x pre-commit hook and GitHub Action updates.",
   "lockFileMaintenance": { "automerge": true },
   "minor": { "automerge": true },
   "patch": { "automerge": true },
@@ -16,6 +16,20 @@
       "matchDepNames": ["prek"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
+    },
+    {
+      "description": "A 0.x hook or action only changes CI, and the PR's own checks run it. uses-with is excluded because it covers tools such as prek, whose minors wait for review. Majors belong to automerge-workflow-majors",
+      "matchManagers": ["github-actions", "pre-commit"],
+      "matchDepTypes": ["!uses-with"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchIsBreaking": true,
+      "automerge": true
+    },
+    {
+      "description": "Repeats default.json's release-job hold, which the rules above override because they apply later",
+      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
+      "matchDatasources": ["!github-runners"],
+      "automerge": false
     }
   ]
 }
