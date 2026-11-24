@@ -68,17 +68,21 @@ updates to a shared setup action wait too.
 ### Minor updates
 
 The `automerge-minor` preset merges minor, patch, and pin updates, and
-lock file maintenance. Updates the versioning scheme marks as breaking,
-such as a semver 0.x minor, still wait for review.
+lock file maintenance. An update that the versioning scheme marks as
+breaking waits for review. Semver marks every 0.x update, patches
+included. A scheme without a breaking-change rule, such as `loose` or
+`regex`, marks only majors, so its 0.x minors merge.
 
-Extend it only when required checks on every PR catch a broken
-dependency update. A scheme without a breaking-change rule, such as
-`loose` or `regex`, treats only majors as breaking, so its 0.x minors
-merge on checks alone.
+Two kinds of breaking update merge anyway:
 
-Renovate marks every 0.x update as breaking, patches included. The
-exception is `prek`: the preset merges its patch updates wherever a
-repository pins it. Minor updates to `prek` wait for review.
+- 0.x minors and patches to pre-commit hooks and GitHub Actions, which
+  only change CI. Tools set by an action's inputs are excluded.
+- `prek` patches, wherever a repository pins `prek`.
+
+Extend the preset only when required checks on every PR run the
+pre-commit hooks and catch a broken dependency update. An action update
+in a workflow that PRs don't trigger, such as a deploy, stays untested
+until after merge.
 
 A repository that pins `prek` needs a required check that runs
 `prek run --all-files`, since only that check catches a broken patch.
