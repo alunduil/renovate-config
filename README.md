@@ -63,7 +63,8 @@ Updates in `.github/workflows/release.yml` and `.github/actions/**`,
 other than runner images, wait for review under either preset,
 because a release job runs them beside its publishing credential.
 Renovate can't tell which workflows call a composite action, so CI-only
-updates to a shared setup action wait too.
+updates to a shared setup action wait too. To hold other files, see
+[Release jobs](#release-jobs).
 
 ### Minor updates
 
@@ -106,6 +107,30 @@ updates for review under either automerge preset. Extend it when the
 repository's package bundles its runtime dependencies and so ships
 their code. It covers npm, Cargo, Poetry, and PEP 621 runtime
 dependencies; lock file maintenance still automerges.
+
+### Release jobs
+
+The `hold-release-job` preset makes updates in one file wait for
+review. Runner images are exempt. Extend it when a release job runs a
+file outside the default hold, such as a deploy workflow:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:automerge-minor",
+    "github>alunduil/renovate-config:hold-release-job(.github/workflows/cd.yml)"
+  ]
+}
+```
+
+List it after the automerge presets, whose rules otherwise override
+the hold. An automerge rule in the repository's own `renovate.json`
+also overrides it.
+
+Add one entry per path or glob. Renovate splits the argument at commas,
+so a list holds only its first path, and a `{a,b}` glob holds nothing.
 
 ## Update GHC in a Haskell library
 

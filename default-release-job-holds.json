@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Review hold for the release-job files common to every repository.",
+  "extends": [
+    "github>alunduil/renovate-config:hold-release-job(.github/workflows/release.yml)",
+    "github>alunduil/renovate-config:hold-release-job(.github/actions/**)"
+  ]
+}
