@@ -177,10 +177,23 @@ pass.
   file maintenance are on.
 - Renovate changes the files `mise lock` writes under `.mise/locks/`
   only together with `mise.lock`, which records their digest.
-- Every PR carries the `dependencies` label, an OpenSSF Scorecard
-  column, and a review request for alunduil.
+- Every PR carries the `dependencies` label and an OpenSSF Scorecard
+  column.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
+
+## Find PRs that need attention
+
+Failed PRs appear under `Needs me` on alunduil's Inbox board, beside
+passing ones. Review requests don't identify them:
+
+- With automerge off, Renovate requests review from alunduil when the
+  PR opens.
+- With automerge on, Renovate requests no review, even after a required
+  check fails. It ignores check results so that an unrequired check
+  can't stall a merge.
+- With a CODEOWNERS file, GitHub requests code-owner review on passing
+  and failing PRs that touch an owned path.
 
 ## Override the preset
 
