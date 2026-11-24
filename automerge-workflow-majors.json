@@ -1,18 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in automerge for major updates that only change CI.",
-  "packageRules": [
-    {
-      "description": "These updates only change CI, and the PR's own checks run the new runner, action, or hook",
-      "matchManagers": ["github-actions", "pre-commit"],
-      "matchUpdateTypes": ["major"],
-      "automerge": true
-    },
-    {
-      "description": "Repeats default.json's release-job hold, which the rule above overrides because it applies later",
-      "matchFileNames": [".github/workflows/release.yml", ".github/actions/**"],
-      "matchDatasources": ["!github-runners"],
-      "automerge": false
-    }
+  "description": "Opt-in automerge for major updates that only change CI. The release-job hold follows the automerge rule because later rules win, and a preset's own rules would come after every preset it extends.",
+  "extends": [
+    "github>alunduil/renovate-config:workflow-majors",
+    "github>alunduil/renovate-config:hold-release-job(.github/workflows/release.yml)",
+    "github>alunduil/renovate-config:hold-release-job(.github/actions/**)"
   ]
 }
