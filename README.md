@@ -179,17 +179,22 @@ pass.
   only together with `mise.lock`, which records their digest.
 - Every PR carries the `dependencies` label and an OpenSSF Scorecard
   column.
-- A PR with automerge off requests review from alunduil when it opens.
-- A PR with automerge on gets no review request from Renovate, even
-  when a required check fails. Renovate disregards check results so
-  that an unrequired check can't stall a merge, and so can't tell which
-  PRs failed. Failed PRs wait under `Needs me` on alunduil's Inbox
-  board, whose column doesn't separate them from passing ones.
-- In a repository with a CODEOWNERS file, GitHub requests code-owner
-  review on every PR that touches an owned path, so a review request
-  there doesn't mean that a check failed.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
+
+## Find PRs that need review
+
+Who requests review depends on automerge and CODEOWNERS:
+
+- With automerge off, Renovate requests review from alunduil when the
+  PR opens.
+- With automerge on, Renovate requests no review, even when a required
+  check fails. To merge whatever unrequired checks report, Renovate
+  ignores check results, so it can't tell which PRs failed. Look for
+  them under `Needs me` on alunduil's Inbox board, which also lists
+  passing PRs.
+- With a CODEOWNERS file, GitHub requests code-owner review on every PR
+  that touches an owned path, passing or failing.
 
 ## Override the preset
 
