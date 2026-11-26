@@ -64,7 +64,8 @@ other than runner images, wait for review under either preset,
 because a release job runs them beside its publishing credential.
 Renovate can't tell which workflows call a composite action, so CI-only
 updates to a shared setup action wait too. To hold other files, see
-[Release jobs](#release-jobs).
+[Release jobs](#release-jobs). To hold a build tool pinned elsewhere,
+such as in `mise.toml`, see [Release build tools](#release-build-tools).
 
 ### Minor updates
 
