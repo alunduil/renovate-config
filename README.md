@@ -64,7 +64,8 @@ other than runner images, wait for review under either preset,
 because a release job runs them beside its publishing credential.
 Renovate can't tell which workflows call a composite action, so CI-only
 updates to a shared setup action wait too. To hold other files, see
-[Release jobs](#release-jobs).
+[Release jobs](#release-jobs). To hold a build tool pinned elsewhere,
+such as in `mise.toml`, see [Release build tools](#release-build-tools).
 
 ### Minor updates
 
@@ -131,6 +132,33 @@ also overrides it.
 
 Add one entry per path or glob. Renovate splits the argument at commas,
 so a list holds only its first path, and a `{a,b}` glob holds nothing.
+
+### Release build tools
+
+A tampered build tool changes the package that publishes, even when the
+build job lacks the publishing credential. The `hold-release-tool`
+preset makes updates to one tool wait for review in every file that
+pins it. Extend it once for each compiler, build tool, or runtime that
+a release job installs from `mise.toml`, `package.json`, or another
+file outside the default hold:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>alunduil/renovate-config",
+    "github>alunduil/renovate-config:automerge-minor",
+    "github>alunduil/renovate-config:hold-release-tool(pypi:poetry)"
+  ]
+}
+```
+
+Pass the dependency name from the update PR's title, such as
+`pypi:poetry` or `node`. Majors, minors, patches, and digests all wait.
+Other tools in the same file, such as a linter that only CI runs, still
+automerge.
+
+As with `hold-release-job`, list it after the automerge presets.
 
 ## Update GHC in a Haskell library
 
