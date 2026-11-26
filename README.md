@@ -135,12 +135,12 @@ so a list holds only its first path, and a `{a,b}` glob holds nothing.
 
 ### Release build tools
 
-The `hold-release-tool` preset makes updates to one build tool wait for
-review, in every file that pins it. Extend it for each compiler, build
-tool, or runtime a release job installs from a pin outside the
-release-job files, such as `mise.toml` or `package.json`. A tampered
-build tool changes the package that publishes, even when the build runs
-in a job without the publishing credential:
+A tampered build tool changes the package that publishes, even when the
+build job lacks the publishing credential. The `hold-release-tool`
+preset makes updates to one tool wait for review in every file that
+pins it. Extend it once for each compiler, build tool, or runtime that
+a release job installs from `mise.toml`, `package.json`, or another
+file outside the default hold:
 
 ```json
 {
@@ -153,13 +153,12 @@ in a job without the publishing credential:
 }
 ```
 
-Pass the dependency name Renovate shows in the PR title or the
-Dependency Dashboard, such as `pypi:poetry` or `node`. Majors, minors,
-patches, and digests all wait. Other tools in the same file, such as
-linters only CI runs, still automerge.
+Pass the dependency name from the update PR's title, such as
+`pypi:poetry` or `node`. Majors, minors, patches, and digests all wait.
+Other tools in the same file, such as a linter that only CI runs, still
+automerge.
 
-As with `hold-release-job`, list it after the automerge presets and add
-one entry per tool.
+As with `hold-release-job`, list it after the automerge presets.
 
 ## Update GHC in a Haskell library
 

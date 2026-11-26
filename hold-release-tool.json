@@ -3,7 +3,7 @@
   "description": "Review hold for one build tool a release job runs, wherever it is pinned.",
   "packageRules": [
     {
-      "description": "A tampered build tool changes the package that publishes, whether or not its job holds the publishing credential. Matching by name covers a tool pinned in more than one file.",
+      "description": "A tampered build tool changes the package that publishes, whether or not its job holds the publishing credential. One tool can be pinned in several files, such as mise.toml and package.json.",
       "matchDepNames": ["{{arg0}}"],
       "automerge": false
     }
