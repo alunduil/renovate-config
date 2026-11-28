@@ -46,6 +46,12 @@
       "matchManagers": ["pep621"],
       "matchFileNames": [".mise/locks/**"],
       "enabled": false
+    },
+    {
+      "description": "Renovate merges only on a run that doesn't push, and this releases more often than Renovate runs. Outside the window Renovate leaves the branch alone, so a later run inside it finds no newer release and merges. Found by counting PR title changes over a week: these PRs moved to a newer version 5 to 10 times before merging; no other dependency kept climbing while waiting to merge",
+      "matchDepNames": ["renovatebot/pre-commit-hooks"],
+      "schedule": ["* 0-5 * * *"],
+      "updateNotScheduled": false
     }
   ]
 }
