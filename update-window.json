@@ -3,7 +3,7 @@
   "description": "Daily update window for one dependency that releases more often than Renovate runs.",
   "packageRules": [
     {
-      "description": "Renovate merges only on a run that doesn't push, so a dependency that releases more often than Renovate runs never merges. Outside the window Renovate leaves the branch alone, so a later run inside it finds no newer release and merges.",
+      "description": "Renovate can't merge a PR on a run that pushes to it. A dependency that releases between most runs gets a push nearly every run. Confining pushes to a window lets a later run in that window merge.",
       "matchDepNames": ["{{arg0}}"],
       "schedule": ["* 0-5 * * *"],
       "updateNotScheduled": false

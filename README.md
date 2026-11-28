@@ -209,10 +209,10 @@ pass.
   column.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
-- `renovatebot/pre-commit-hooks` releases several times a day, so its
-  PRs open and move to newer versions only between midnight and 06:00
-  London time. An automerge PR merges on a later run in that window once
-  checks pass. Outside the window, Renovate leaves the PR alone.
+- Renovate opens, updates, and merges `renovatebot/pre-commit-hooks`
+  PRs only between midnight and 06:00 London time. The hook releases
+  several times a day, and Renovate can't merge a PR on a run that
+  pushes to it.
 
 ## Find PRs that need attention
 

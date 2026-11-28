@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Update windows for dependencies whose PRs moved to a newer version on most Renovate runs, found by counting PR title changes over a week.",
+  "description": "Update windows for every repository. A dependency belongs here when its PR title changes version on most Renovate runs over a week.",
   "extends": [
     "github>alunduil/renovate-config:update-window(renovatebot/pre-commit-hooks)"
   ]
