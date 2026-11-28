@@ -29,26 +29,32 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           OWNER: ${{ github.repository_owner }}
+          RENOVATE: renovate[bot]
+          # The pull request commits endpoint lists no more than this.
+          COMMIT_LIMIT: 250
         run: |
-          pull="repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}"
+          list() {
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/$1?per_page=100" | jq 'add'
+          }
 
-          commits="$(gh api --paginate --slurp "${pull}/commits?per_page=100" | jq 'add')"
+          commits="$(list commits)"
 
-          # The endpoint lists at most 250 commits and the event's head must be
-          # the last of them; a moved branch gets a run of its own.
-          if [ "$(jq 'length' <<< "${commits}")" -ge 250 ] \
-            || [ "$(jq -r 'last.sha' <<< "${commits}")" != "${HEAD_SHA}" ]; then
+          # A moved branch gets a run of its own.
+          complete="$(jq --argjson limit "${COMMIT_LIMIT}" --arg head "${HEAD_SHA}" '
+            length < $limit and last.sha == $head
+          ' <<< "${commits}")"
+          if [ "${complete}" != true ]; then
             echo "::error::The pull request's commits don't end at ${HEAD_SHA}."
             exit 1
           fi
 
-          others="$(jq -r '
+          others="$(jq -r --arg renovate "${RENOVATE}" '
             .[]
-            | select(.author.login != "renovate[bot]" or .commit.verification.verified != true)
+            | select(.author.login != $renovate or .commit.verification.verified != true)
             | .sha
           ' <<< "${commits}")"
           if [ -z "${others}" ]; then
-            echo "Every commit is a verified renovate[bot] commit."
+            echo "Every commit is a verified ${RENOVATE} commit."
             exit 0
           fi
 
@@ -57,13 +63,12 @@ jobs:
 
           # A COMMENTED review leaves an earlier approval standing, as it does
           # on GitHub.
-          review="$(gh api --paginate --slurp "${pull}/reviews?per_page=100" | jq -c --arg owner "${OWNER}" '
-            add
-            | map(select(.user.login == $owner and .state != "COMMENTED"))
-            | last // {}
+          approved="$(list reviews | jq --arg owner "${OWNER}" --arg head "${HEAD_SHA}" '
+            map(select(.user.login == $owner and .state != "COMMENTED"))
+            | last
+            | .state == "APPROVED" and .commit_id == $head
           ')"
-          if [ "$(jq -r '.state' <<< "${review}")" = APPROVED ] \
-            && [ "$(jq -r '.commit_id' <<< "${review}")" = "${HEAD_SHA}" ]; then
+          if [ "${approved}" = true ]; then
             echo "${OWNER} approved ${HEAD_SHA}."
             exit 0
           fi
