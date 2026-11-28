@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+# A review event starts no pull_request run, so the owner's approval re-runs
+# the failed runs on the approved head, where check-renovate-commits.yml now
+# finds the approval.
+name: Re-run Renovate commit checks
+
+on:
+  workflow_call:
+
+jobs:
+  rerun:
+    name: Re-run failed checks on the approved Renovate branch
+    # A fork's GITHUB_TOKEN can't re-run workflows.
+    if: >-
+      github.event.review.state == 'approved'
+      && github.event.review.user.login == github.repository_owner
+      && startsWith(github.event.pull_request.head.ref, 'renovate/')
+      && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+
+    steps:
+      - name: Re-run failed pull request runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          query="head_sha=${HEAD_SHA}&event=pull_request&status=failure&per_page=100"
+          runs="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?${query}" --jq '.workflow_runs[].id')"
+          for run in ${runs}; do
+            echo "Re-running failed jobs in run ${run}."
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/${run}/rerun-failed-jobs"
+          done

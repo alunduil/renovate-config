@@ -68,3 +68,55 @@ Every input is optional.
   doesn't push a second round.
 - If the branch moved after the hooks ran, the push job skips. The
   newer commit gets a run of its own.
+
+## Hold hook fixes for review
+
+The preset lists the App in `gitIgnoredAuthors`, so Renovate still
+automerges a branch carrying the App's fix. `check-renovate-commits.yml`
+fails a required check on a Renovate pull request with any commit that
+isn't a verified `renovate[bot]` commit. It passes once the repository
+owner approves the pull request's current head.
+
+Add a job to the workflow that calls `fix-renovate-hooks.yml`:
+
+```yaml
+jobs:
+  check-renovate-commits:
+    name: Check Renovate branch commits
+    uses: alunduil/renovate-config/.github/workflows/check-renovate-commits.yml@SHA # main
+    permissions:
+      contents: read
+      pull-requests: read
+```
+
+Require the context `Check Renovate branch commits / Hold others'
+commits on the Renovate branch` in the repository's ruleset. Outside
+`renovate/*` branches the job skips, which satisfies the check.
+
+A review starts no `pull_request` run, so add a workflow that re-runs
+the failed runs when the owner approves:
+
+```yaml
+name: Review
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  rerun-renovate-commit-checks:
+    name: Re-run Renovate commit checks
+    uses: alunduil/renovate-config/.github/workflows/rerun-renovate-commit-checks.yml@SHA # main
+    permissions:
+      actions: write
+```
+
+The approval re-runs every failed job in the `pull_request` runs on the
+approved head, not only this check.
+
+What to expect:
+
+- A pull request whose commits are all Renovate's passes without review.
+- A hook fix, or any other commit, fails the check until the owner
+  approves that head. A commit pushed after the approval fails it again.
+- A commit with Renovate's author email but no GitHub signature fails.
