@@ -213,10 +213,10 @@ pass.
   a lockfile, such as npm, Cargo, Poetry, mise, and Terraform updates.
   It rebases action, hook, image, Ansible Galaxy, and cabal updates
   only on conflict, so one merge doesn't restart CI on every other
-  open PR. A repository that requires up-to-date branches must set
-  `rebaseWhen` back in a package rule, or those PRs never automerge
-  once they fall behind. A top-level `rebaseWhen` doesn't override the
-  preset's package rule.
+  open PR. A repository that requires up-to-date branches must add
+  `github>alunduil/renovate-config:rebase-lockfiles-only` to
+  `ignorePresets`, or those PRs never automerge once they fall behind.
+  A top-level `rebaseWhen` doesn't override the preset.
 
 ## Find PRs that need attention
 
