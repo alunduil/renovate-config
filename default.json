@@ -5,7 +5,8 @@
     "config:best-practices",
     "security:openssf-scorecard",
     "customManagers:githubActionsVersions",
-    "github>alunduil/renovate-config:default-release-job-holds"
+    "github>alunduil/renovate-config:default-release-job-holds",
+    "github>alunduil/renovate-config:rebase-lockfiles-only"
   ],
   "timezone": "Europe/London",
   "reviewers": ["alunduil"],

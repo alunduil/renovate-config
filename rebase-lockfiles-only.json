@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Rebase only lockfile updates when the base branch moves. Ignore this preset where branches must be up to date before merging.",
+  "packageRules": [
+    {
+      "description": "These managers write no lockfile, so skipping the rebase can't merge a lockfile that CI never tested",
+      "matchManagers": [
+        "ansible-galaxy",
+        "custom.regex",
+        "devcontainer",
+        "docker-compose",
+        "dockerfile",
+        "github-actions",
+        "haskell-cabal",
+        "pre-commit"
+      ],
+      "rebaseWhen": "conflicted"
+    }
+  ]
+}

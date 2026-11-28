@@ -209,6 +209,10 @@ pass.
   column.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
+- When the default branch moves, Renovate rebases PRs that change a
+  lockfile, such as npm, Cargo, Poetry, mise, and Terraform updates.
+  Action, hook, image, Ansible Galaxy, and cabal PRs rebase only on
+  conflict, so one merge doesn't restart CI on every other open PR.
 
 ## Find PRs that need attention
 
@@ -234,6 +238,19 @@ the preset's value; these merge with it instead:
 | `customManagers`      | Appended to the preset's managers.                |
 | `addLabels`           | Adds to `labels` without dropping `dependencies`. |
 | `additionalReviewers` | Adds to `reviewers` without dropping alunduil.    |
+
+In a repository that requires up-to-date branches, ignore the rebase
+preset. Otherwise a PR that falls behind waits for a conflict before
+it rebases, and never automerges in the meantime. Setting `rebaseWhen`
+at the top level doesn't override the preset.
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>alunduil/renovate-config"],
+  "ignorePresets": ["github>alunduil/renovate-config:rebase-lockfiles-only"]
+}
+```
 
 ## Fix hooks on Renovate branches
 
