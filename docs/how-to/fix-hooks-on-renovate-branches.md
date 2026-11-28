@@ -73,7 +73,7 @@ Every input is optional.
 
 The preset lists the App in `gitIgnoredAuthors`, so Renovate still
 automerges a branch carrying the App's fix. `check-renovate-commits.yml`
-fails a required check on a Renovate pull request with any commit that
+fails a required check when a Renovate pull request has a commit that
 isn't a verified `renovate[bot]` commit. It passes once the repository
 owner approves the pull request's current head.
 

@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
 # SPDX-License-Identifier: MIT
 ---
-# A review event starts no pull_request run, so the owner's approval re-runs
-# the failed runs on the approved head, where check-renovate-commits.yml now
-# finds the approval.
+# A review starts no pull_request run. On the owner's approval, this re-runs
+# the failed runs on the approved head so check-renovate-commits.yml sees the
+# approval.
 name: Re-run Renovate commit checks
 
 on:
