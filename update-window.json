@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Daily update window for one dependency that releases more often than Renovate runs.",
+  "packageRules": [
+    {
+      "description": "Renovate merges only on a run that doesn't push, so a dependency that releases more often than Renovate runs never merges. Outside the window Renovate leaves the branch alone, so a later run inside it finds no newer release and merges.",
+      "matchDepNames": ["{{arg0}}"],
+      "schedule": ["* 0-5 * * *"],
+      "updateNotScheduled": false
+    }
+  ]
+}
