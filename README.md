@@ -209,6 +209,14 @@ pass.
   column.
 - PRs open as soon as the wait clears, at most two per hour, against
   each repository's own default branch.
+- When the default branch moves, Renovate rebases only PRs that change
+  a lockfile, such as npm, Cargo, Poetry, mise, and Terraform updates.
+  It rebases action, hook, image, Ansible Galaxy, and cabal updates
+  only on conflict, so one merge doesn't restart CI on every other
+  open PR. A repository that requires up-to-date branches must set
+  `rebaseWhen` back in a package rule, or those PRs never automerge
+  once they fall behind. A top-level `rebaseWhen` doesn't override the
+  preset's package rule.
 
 ## Find PRs that need attention
 

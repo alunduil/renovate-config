@@ -46,6 +46,20 @@
       "matchManagers": ["pep621"],
       "matchFileNames": [".mise/locks/**"],
       "enabled": false
+    },
+    {
+      "description": "These managers write no lockfile, so two of their updates can't merge onto a lockfile neither tested against. Rebasing them only on conflict stops each merge restarting CI on every sibling. A repository that requires up-to-date branches must override this, because a branch that falls behind then never automerges",
+      "matchManagers": [
+        "ansible-galaxy",
+        "custom.regex",
+        "devcontainer",
+        "docker-compose",
+        "dockerfile",
+        "github-actions",
+        "haskell-cabal",
+        "pre-commit"
+      ],
+      "rebaseWhen": "conflicted"
     }
   ]
 }
