@@ -238,8 +238,9 @@ the preset's value; these merge with it instead:
 ## Fix hooks on Renovate branches
 
 A reusable workflow pushes pre-commit hook fixes to Renovate pull
-requests. See [Fix hooks on Renovate
-branches](docs/how-to/fix-hooks-on-renovate-branches.md).
+requests. Another holds any commit Renovate didn't make, hook fixes
+included, until the repository owner approves. See [Fix hooks on
+Renovate branches](docs/how-to/fix-hooks-on-renovate-branches.md).
 
 ## Contributions
 

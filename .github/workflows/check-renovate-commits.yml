@@ -1,0 +1,77 @@
+# SPDX-FileCopyrightText: 2026 Alex Brandt <alunduil@gmail.com>
+# SPDX-License-Identifier: MIT
+---
+# gitIgnoredAuthors lets Renovate automerge a branch carrying hook-fix
+# commits. This check fails on any commit Renovate didn't make until the
+# repository owner approves the head. rerun-renovate-commit-checks.yml re-runs
+# it on that approval.
+name: Check Renovate branch commits
+
+on:
+  workflow_call:
+
+jobs:
+  commits:
+    name: Hold others' commits on the Renovate branch
+    # A skipped job satisfies a required check, so fork pull requests still
+    # run it.
+    if: startsWith(github.head_ref, 'renovate/')
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Check commits and approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          OWNER: ${{ github.repository_owner }}
+          RENOVATE: renovate[bot]
+          # GitHub lists at most this many commits on a pull request.
+          COMMIT_LIMIT: 250
+        run: |
+          list() {
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/$1?per_page=100" | jq 'add'
+          }
+
+          commits="$(list commits)"
+
+          # If the branch moved, this run fails and the new head gets its own.
+          complete="$(jq --argjson limit "${COMMIT_LIMIT}" --arg head "${HEAD_SHA}" '
+            length < $limit and last.sha == $head
+          ' <<< "${commits}")"
+          if [ "${complete}" != true ]; then
+            echo "::error::The pull request's commits don't end at ${HEAD_SHA}."
+            exit 1
+          fi
+
+          others="$(jq -r --arg renovate "${RENOVATE}" '
+            .[]
+            | select(.author.login != $renovate or .commit.verification.verified != true)
+            | .sha
+          ' <<< "${commits}")"
+          if [ -z "${others}" ]; then
+            echo "Every commit is a verified ${RENOVATE} commit."
+            exit 0
+          fi
+
+          echo "Commits not made by Renovate:"
+          echo "${others}"
+
+          # A COMMENTED review leaves an earlier approval standing, as it does
+          # on GitHub.
+          approved="$(list reviews | jq --arg owner "${OWNER}" --arg head "${HEAD_SHA}" '
+            map(select(.user.login == $owner and .state != "COMMENTED"))
+            | last
+            | .state == "APPROVED" and .commit_id == $head
+          ')"
+          if [ "${approved}" = true ]; then
+            echo "${OWNER} approved ${HEAD_SHA}."
+            exit 0
+          fi
+
+          echo "::error::Commits not made by Renovate wait for ${OWNER} to approve ${HEAD_SHA}."
+          exit 1
